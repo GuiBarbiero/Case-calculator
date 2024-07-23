@@ -1,0 +1,17 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Operation {
+  id        Int      @id @default(autoincrement())
+  type      String
+  operand1  Float
+  operand2  Float?    // Permite valores nulos
+  result    Float
+  createdAt DateTime @default(now())
+}
