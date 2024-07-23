@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora</title>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    async function calcular(endpoint) {
+      const operand1 = parseFloat(document.getElementById('operand1').value);
+      const operand2 = parseFloat(document.getElementById('operand2').value) || null;
+
+      const response = await fetch(`http://localhost:3000/operacoes/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ operand1, operand2 }),
+      });
+
+      const result = await response.json();
+      document.getElementById('result').textContent = `Resultado: ${result.result}`;
+    }
+
+    async function listarOperacoes() {
+      const response = await fetch('http://localhost:3000/operacoes/listar');
+      const results = await response.json();
+
+      const resultsContainer = document.getElementById('results');
+      resultsContainer.innerHTML = ''; // Limpar resultados anteriores
+
+      results.forEach(operation => {
+        const operationElement = document.createElement('p');
+        operationElement.textContent = `Tipo: ${operation.type}, Operando 1: ${operation.operand1}, Operando 2: ${operation.operand2}, Resultado: ${operation.result}`;
+        resultsContainer.appendChild(operationElement);
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="calculator">
+    <h1>Calculadora</h1>
+    <input type="number" id="operand1" placeholder="Operando 1">
+    <input type="number" id="operand2" placeholder="Operando 2">
+    <br>
+    <button onclick="calcular('adicao')">Adicionar</button>
+    <button onclick="calcular('subtracao')">Subtrair</button>
+    <button onclick="calcular('multiplicacao')">Multiplicar</button>
+    <button onclick="calcular('divisao')">Dividir</button>
+    <button onclick="calcular('logaritmo')">Logaritmo</button>
+    <button onclick="calcular('percentual')">Percentual</button>
+    <button onclick="calcular('quadrado')">Quadrado</button>
+    <button onclick="calcular('cubo')">Cubo</button>
+    <br>
+    <button onclick="listarOperacoes()">Listar Operações</button>
+    <p id="result"></p>
+    <div id="results" class="results"></div>
+  </div>
+</body>
+</html>
